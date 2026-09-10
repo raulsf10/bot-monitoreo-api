@@ -23,6 +23,9 @@ export const esquemaValidacionEnv = Joi.object({
   INFORMATICA_USERNAME: Joi.string().allow('').optional(),
   INFORMATICA_PASSWORD: Joi.string().allow('').optional(),
   INFORMATICA_ENCRYPT: Joi.string().valid('true', 'false').default('false'),
+  INFORMATICA_POOL_MIN: Joi.number().integer().min(0).max(50).default(2),
+  INFORMATICA_POOL_MAX: Joi.number().integer().min(1).max(100).default(50),
+  INFORMATICA_POOL_IDLE_TIMEOUT_MS: Joi.number().integer().min(1000).default(60000),
 
   AD_URL: Joi.string().allow('').optional(),
   AD_DOMINIO: Joi.string().allow('').optional(),

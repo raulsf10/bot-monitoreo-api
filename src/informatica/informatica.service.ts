@@ -34,6 +34,10 @@ export class InformaticaService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit(): Promise<void> {
     const host = this.config.get<string>("informatica.host");
+    const poolMinimo = this.config.get<number>("informatica.poolMinimo") ?? 2;
+    const poolMaximo = this.config.get<number>("informatica.poolMaximo") ?? 50;
+    const poolInactividadMs =
+      this.config.get<number>("informatica.poolInactividadMs") ?? 60_000;
     if (!host) {
       this.logger.warn(
         "Repositorio Informatica no configurado (INFORMATICA_HOST vacío). Módulo de workflows deshabilitado.",
@@ -52,10 +56,16 @@ export class InformaticaService implements OnModuleInit, OnModuleDestroy {
           encrypt: this.config.get<boolean>("informatica.encriptar") ?? false,
           trustServerCertificate: true,
         },
-        pool: { min: 2, max: 5, idleTimeoutMillis: 60000 },
+        pool: {
+          min: poolMinimo,
+          max: Math.max(poolMinimo, poolMaximo),
+          idleTimeoutMillis: poolInactividadMs,
+        },
       }).connect();
 
-      this.logger.log(`Pool Informatica (solo lectura) conectado a ${host}`);
+      this.logger.log(
+        `Pool Informatica (solo lectura) conectado a ${host} (min=${poolMinimo}, max=${Math.max(poolMinimo, poolMaximo)}).`,
+      );
     } catch (error) {
       this.logger.warn(
         `No se pudo conectar al repositorio Informatica: ${(error as Error).message}. Módulo de workflows deshabilitado.`,

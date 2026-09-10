@@ -28,6 +28,12 @@ export const configInformatica = registerAs('informatica', () => ({
   usuario: process.env.INFORMATICA_USERNAME ?? '',
   contrasena: process.env.INFORMATICA_PASSWORD ?? '',
   encriptar: process.env.INFORMATICA_ENCRYPT === 'true',
+  poolMinimo: parseInt(process.env.INFORMATICA_POOL_MIN ?? '2', 10),
+  poolMaximo: parseInt(process.env.INFORMATICA_POOL_MAX ?? '50', 10),
+  poolInactividadMs: parseInt(
+    process.env.INFORMATICA_POOL_IDLE_TIMEOUT_MS ?? '60000',
+    10,
+  ),
 }));
 
 export const configLdap = registerAs('ldap', () => ({
